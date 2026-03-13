@@ -1,12 +1,32 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-import { Atom, PlayCircle, Star, Trophy } from 'lucide-react'
+import { Atom, Trophy } from 'lucide-react'
 
 import { FilmCard } from '#/components/ui/Card'
+
+import { fetchFilmData } from '#/lib/FetchFilm'
+
+import { Hero } from '#/components/ui/Hero'
+
+import { LoadingComponent } from '#/components/Loading'
+
+import { useQuery } from '@tanstack/react-query'
 
 export const Route = createFileRoute('/')({ component: App })
 
 function App() {
+  const { data, isLoading, error } = useQuery({
+    queryKey: ['film'],
+    queryFn: fetchFilmData,
+  })
+  if (isLoading) return <LoadingComponent />
+  if (error)
+    return (
+      <div>
+        Error: {error instanceof Error ? error.message : 'Unknown error'}
+      </div>
+    )
+  const film = data?.data
   return (
     <main
       className="min-h-screen bg-zinc-950 text-zinc-100"
@@ -14,57 +34,7 @@ function App() {
     >
       <div className="flex flex-col pt-20">
         {/* Hero */}
-        <section className="relative mb-12 flex h-[85vh] w-full items-center px-6 md:px-16 lg:px-24">
-          <div className="absolute inset-0 -z-10">
-            <img
-              src="https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?auto=format&fit=crop&q=80&w=2072"
-              alt="Hero Featured"
-              className="h-full w-full object-cover brightness-[0.7]"
-            />
-            <div className="hero-mask absolute inset-0" />
-          </div>
-
-          <div className="relative z-10 mt-24 max-w-2xl space-y-8">
-            <div className="flex items-center gap-3">
-              <span className="rounded px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.25em] text-black bg-white">
-                Trending Now
-              </span>
-              <div className="ml-2 flex items-center gap-1 text-amber-400">
-                <Star className="h-3 w-3 fill-current" />
-                <span className="text-sm font-bold">8.9</span>
-              </div>
-            </div>
-
-            <div className="space-y-6">
-              <h1 className="text-4xl font-bold leading-none tracking-tight sm:text-6xl md:text-7xl lg:text-8xl">
-                The Silent
-                <br />
-                Horizon
-              </h1>
-              <p className="max-w-xl text-lg leading-relaxed text-zinc-400">
-                In a world where sound has been lost to a cosmic anomaly, a lone
-                cartographer must journey across the obsidian plains to find the
-                origin of the first note.
-              </p>
-            </div>
-
-            <div className="flex flex-wrap items-center gap-4">
-              <button
-                type="button"
-                className="flex items-center justify-center gap-3 rounded-full bg-white px-10 py-4 text-xs font-bold uppercase tracking-[0.3em] text-black transition-transform hover:scale-[1.03] active:scale-95"
-              >
-                Play Now
-                <PlayCircle className="h-5 w-5" />
-              </button>
-              <button
-                type="button"
-                className="flex items-center justify-center gap-3 rounded-full border border-zinc-700 bg-zinc-800/60 px-8 py-4 text-xs font-bold uppercase tracking-[0.3em] text-white backdrop-blur-md transition-transform hover:scale-[1.03] active:scale-95"
-              >
-                More Info
-              </button>
-            </div>
-          </div>
-        </section>
+        <Hero film={film?.slider || []} />
 
         {/* Continue Watching */}
         <section className="mb-20 px-6 md:px-16 lg:px-24">
@@ -159,13 +129,40 @@ function App() {
           </div>
 
           <div className="grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
-            {featuredFilms.map((movie) => (
+            {film?.popular.map((movie: PopularItem) => (
               <FilmCard
-                key={movie.title}
+                key={movie.aquaaquariaId}
                 title={movie.title}
-                meta={movie.meta}
-                image={movie.image}
-                href={movie.href}
+                meta={movie.type || 'Movie'}
+                image={movie.poster}
+                href={`/film/${movie.aquaaquariaId}`}
+              />
+            ))}
+          </div>
+        </section>
+
+        {/* Box Office */}
+        <section className="mb-20 px-6 md:px-16 lg:px-24">
+          <div className="mb-8 flex items-end justify-between">
+            <h2 className="text-xl font-bold uppercase tracking-[0.25em]">
+              Box Office
+            </h2>
+            <button
+              type="button"
+              className="text-xs font-bold uppercase tracking-[0.25em] text-zinc-500 transition-colors hover:text-white"
+            >
+              See All
+            </button>
+          </div>
+
+          <div className="grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
+            {film?.boxoffice.map((movie: BoxOfficeItem) => (
+              <FilmCard
+                key={movie.aquaaquariaId}
+                title={movie.title}
+                meta={movie.score || '0.0'}
+                image={movie.poster}
+                href={`/film/${movie.aquaaquariaId}`}
               />
             ))}
           </div>
@@ -208,11 +205,38 @@ function App() {
           </div>
         </section>
 
+        {/* Serial TV */}
+        <section className="mb-20 px-6 md:px-16 lg:px-24">
+          <div className="mb-8 flex items-end justify-between">
+            <h2 className="text-xl font-bold uppercase tracking-[0.25em]">
+              Serial TV
+            </h2>
+            <button
+              type="button"
+              className="text-xs font-bold uppercase tracking-[0.25em] text-zinc-500 transition-colors hover:text-white"
+            >
+              See All
+            </button>
+          </div>
+
+          <div className="grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
+            {film?.serialtv.map((movie: SerialTvItem) => (
+              <FilmCard
+                key={movie.aquaaquariaId}
+                title={movie.title}
+                meta={movie.episode || '0'}
+                image={movie.poster}
+                href={`/film/${movie.aquaaquariaId}`}
+              />
+            ))}
+          </div>
+        </section>
+
         {/* Original Series */}
         <section className="mb-24 px-6 md:px-16 lg:px-24">
           <div className="mb-8 flex items-end justify-between">
             <h2 className="text-xl font-bold uppercase tracking-[0.25em]">
-              Original Series
+              Last Movie
             </h2>
             <button
               type="button"
@@ -223,43 +247,22 @@ function App() {
           </div>
 
           <div className="custom-scrollbar -mx-6 flex gap-6 overflow-x-auto px-6 pb-8">
-            {[
-              {
-                title: 'Night Watch',
-                meta: '8 Seasons • Crime',
-                img: 'https://images.unsplash.com/photo-1512113569143-3d6239634b07?auto=format&fit=crop&q=80&w=600',
-              },
-              {
-                title: 'Subsurface',
-                meta: '2 Seasons • Mystery',
-                img: 'https://images.unsplash.com/photo-1509248961158-e54f6934749c?auto=format&fit=crop&q=80&w=600',
-              },
-              {
-                title: 'Light Speed',
-                meta: '4 Seasons • Sci-Fi',
-                img: 'https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?auto=format&fit=crop&q=80&w=600',
-              },
-              {
-                title: 'The Grid',
-                meta: '1 Season • Drama',
-                img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=600',
-              },
-            ].map((series) => (
+            {film?.lastmovie.map((movie: LastMovieItem) => (
               <div
-                key={series.title}
+                key={movie.aquaaquariaId}
                 className="movie-card group relative aspect-video w-80 shrink-0 overflow-hidden rounded-xl bg-zinc-900"
               >
                 <img
-                  src={series.img}
-                  alt={series.title}
+                  src={movie.poster}
+                  alt={movie.title}
                   className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                 />
                 <div className="absolute inset-0 flex flex-col justify-end bg-linear-to-t from-black/80 via-transparent to-transparent p-6">
                   <h3 className="text-sm font-bold uppercase tracking-[0.25em]">
-                    {series.title}
+                    {movie.title}
                   </h3>
                   <p className="text-[10px] uppercase tracking-[0.25em] text-zinc-400">
-                    {series.meta}
+                    {movie.type}
                   </p>
                 </div>
               </div>
@@ -270,42 +273,3 @@ function App() {
     </main>
   )
 }
-
-const featuredFilms: FilmCardProps[] = [
-  {
-    title: 'The Architect',
-    meta: 'Mystery • 2024',
-    image:
-      'https://images.unsplash.com/photo-1478720568477-152d9b164e26?auto=format&fit=crop&q=80&w=600',
-  },
-  {
-    title: 'After Midnight',
-    meta: 'Thriller • 2024',
-    image:
-      'https://images.unsplash.com/photo-1496715976403-7e36d43f17b5?auto=format&fit=crop&q=80&w=600',
-  },
-  {
-    title: 'StarDust',
-    meta: 'Sci-Fi • 2021',
-    image:
-      'https://images.unsplash.com/photo-1454789548928-9efd52dc4031?auto=format&fit=crop&q=80&w=600',
-  },
-  {
-    title: 'The Horizon',
-    meta: 'Sci-Fi • 2024',
-    image:
-      'https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&q=80&w=600',
-  },
-  {
-    title: 'Glass City',
-    meta: 'Drama • 2023',
-    image:
-      'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&q=80&w=600',
-  },
-  {
-    title: 'Aether',
-    meta: 'Sci-Fi • 2024',
-    image:
-      'https://images.unsplash.com/photo-1444703686981-a3abbc4d4fe3?auto=format&fit=crop&q=80&w=600',
-  },
-]
