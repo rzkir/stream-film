@@ -120,7 +120,11 @@ interface RelatedItem extends BaseFilmItem {
 }
 
 interface ServerInfo {
-  qualities: string[]
+  // Bentuk aktual dari API: array objek { title, serverList }
+  qualities: {
+    title: string
+    serverList: unknown[]
+  }[]
 }
 
 interface EpisodeItem {
@@ -128,4 +132,17 @@ interface EpisodeItem {
   episodeNumber: number
   episodeId: string
   href: string
+}
+
+/* ======================== Film Server ======================== */
+interface FilmServerApiResponse {
+  statusCode: number
+  statusMessage: string
+  message: string
+  ok: boolean
+  data: FilmServerData
+}
+
+interface FilmServerData {
+  url: string
 }

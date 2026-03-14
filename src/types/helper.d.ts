@@ -6,3 +6,11 @@ type FilmCardProps = {
   className?: string
   children?: ReactNode
 }
+
+interface MediaPlayerWithAdBlockProps {
+  streamUrl: string
+  isMinimized?: boolean
+  onError?: (error: string) => void
+  onLoadSuccess?: () => void
+  enableAdBlocking?: boolean
+}

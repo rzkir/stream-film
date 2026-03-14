@@ -41,3 +41,24 @@ export const fetchFilmDetailData = async (
   const json: FilmDetailApiResponse = await response.json()
   return json
 }
+
+export const fetchFilmServerData = async (
+  serverId: string,
+): Promise<FilmServerApiResponse> => {
+  if (!API_URL) {
+    throw new Error('VITE_API_URL not configured')
+  }
+
+  const response = await fetch(`${API_URL}/server/${serverId}`, {
+    headers: buildAuthHeaders(),
+  })
+
+  if (!response.ok) {
+    throw new Error(
+      `Failed to fetch film server data: ${response.status} ${response.statusText}`,
+    )
+  }
+
+  const json: FilmServerApiResponse = await response.json()
+  return json
+}
