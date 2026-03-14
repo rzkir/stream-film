@@ -10,11 +10,17 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as AboutRouteImport } from './routes/about'
+import { Route as AquaaquariaIdRouteImport } from './routes/$aquaaquariaId'
 import { Route as IndexRouteImport } from './routes/index'
 
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AquaaquariaIdRoute = AquaaquariaIdRouteImport.update({
+  id: '/$aquaaquariaId',
+  path: '/$aquaaquariaId',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -25,27 +31,31 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/$aquaaquariaId': typeof AquaaquariaIdRoute
   '/about': typeof AboutRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/$aquaaquariaId': typeof AquaaquariaIdRoute
   '/about': typeof AboutRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/$aquaaquariaId': typeof AquaaquariaIdRoute
   '/about': typeof AboutRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about'
+  fullPaths: '/' | '/$aquaaquariaId' | '/about'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about'
-  id: '__root__' | '/' | '/about'
+  to: '/' | '/$aquaaquariaId' | '/about'
+  id: '__root__' | '/' | '/$aquaaquariaId' | '/about'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AquaaquariaIdRoute: typeof AquaaquariaIdRoute
   AboutRoute: typeof AboutRoute
 }
 
@@ -56,6 +66,13 @@ declare module '@tanstack/react-router' {
       path: '/about'
       fullPath: '/about'
       preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/$aquaaquariaId': {
+      id: '/$aquaaquariaId'
+      path: '/$aquaaquariaId'
+      fullPath: '/$aquaaquariaId'
+      preLoaderRoute: typeof AquaaquariaIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -70,6 +87,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AquaaquariaIdRoute: AquaaquariaIdRoute,
   AboutRoute: AboutRoute,
 }
 export const routeTree = rootRouteImport

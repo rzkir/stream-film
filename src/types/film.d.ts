@@ -1,3 +1,4 @@
+/* ======================== Home Page ======================== */
 interface FilmApiResponse {
   statusCode: number
   statusMessage: string
@@ -70,4 +71,61 @@ interface LastMovieItem extends BaseFilmItem {
   episode?: string
   tailer: string
   genreList?: GenreItem[]
+}
+
+/* ======================== Film Detail Page ======================== */
+interface FilmDetailApiResponse {
+  statusCode: number
+  statusMessage: string
+  message: string
+  ok: boolean
+  data: FilmDetailData
+}
+
+interface FilmDetailData {
+  title: string
+  aquaaquariaId: string
+  score: string
+  director: DirectorItem
+  aired: string
+  duration: string
+  episodes: number
+  defaultStream: string
+  country: string
+  poster: string
+  description: string
+  cast: CastItem[]
+  genreList: GenreItem[]
+  relatedList: RelatedItem[]
+  server: ServerInfo
+  episodeList: EpisodeItem[]
+}
+
+interface DirectorItem {
+  title: string
+  directorId: string
+  href: string
+}
+
+interface CastItem {
+  title: string
+  castId: string
+  href: string
+}
+
+interface RelatedItem extends BaseFilmItem {
+  genreList: GenreItem[]
+  releaseDate: string
+  country: string
+}
+
+interface ServerInfo {
+  qualities: string[]
+}
+
+interface EpisodeItem {
+  title: string
+  episodeNumber: number
+  episodeId: string
+  href: string
 }

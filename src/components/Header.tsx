@@ -7,7 +7,7 @@ import ThemeToggle from './ThemeToggle'
 export default function Header() {
   return (
     <header className="fixed inset-x-0 top-0 z-50 bg-linear-to-b from-black/80 to-zinc-950/0 px-4 py-4 text-zinc-100 backdrop-blur-xl">
-      <nav className="mx-auto flex max-w-6xl items-center justify-between gap-6">
+      <nav className="mx-auto flex container items-center justify-between gap-6">
         <div className="flex items-center gap-10">
           <Link
             to="/"

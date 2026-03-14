@@ -135,7 +135,7 @@ function App() {
                 title={movie.title}
                 meta={movie.type || 'Movie'}
                 image={movie.poster}
-                href={`/film/${movie.aquaaquariaId}`}
+                href={`/${movie.aquaaquariaId}`}
               />
             ))}
           </div>
@@ -162,7 +162,7 @@ function App() {
                 title={movie.title}
                 meta={movie.score || '0.0'}
                 image={movie.poster}
-                href={`/film/${movie.aquaaquariaId}`}
+                href={`/${movie.aquaaquariaId}`}
               />
             ))}
           </div>
@@ -226,7 +226,7 @@ function App() {
                 title={movie.title}
                 meta={movie.episode || '0'}
                 image={movie.poster}
-                href={`/film/${movie.aquaaquariaId}`}
+                href={`/${movie.aquaaquariaId}`}
               />
             ))}
           </div>
